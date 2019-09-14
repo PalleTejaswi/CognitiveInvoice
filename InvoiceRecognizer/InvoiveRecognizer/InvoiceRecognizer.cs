@@ -27,19 +27,31 @@ namespace InvoiceRecognizer
             Invoice inv = new Invoice();
             InvoicePage invPage = new InvoicePage();
             //TODO: Change the following code to reflect the new properties
-            invPage.fromCompanyName = "Apple";
-            invPage.fromCompanyAddress = "1 Infinite Loop, Cupertino, CA 95014";
+            invPage.date = new DateTime(2018, 12, 24); ;
+            invPage.invoiceNumber = 544;
+            invPage.terms = "NET 30";
+            invPage.due = new DateTime(2019, 01, 24);
+            invPage.subtotal = 3000.00;
+            invPage.taxPercent = 6.50 ;
+            invPage.taxAmount = 195.00;
+            invPage.balanceDue = 3195.00;
 
             //First line
             InvoiceLineItem invLineItem = new InvoiceLineItem();
             invLineItem.serialNumber = 1;
             invLineItem.itemDescription = "Item 1";
+            invLineItem.quantity = 2;
+            invLineItem.price = 600.00;
+            invLineItem.amount = 1200.00;
             invPage.invoiceLineItems.Add(invLineItem);
 
             // Second Line
             InvoiceLineItem invLineItem2 = new InvoiceLineItem();
             invLineItem2.serialNumber = 2;
             invLineItem2.itemDescription = "Item 2";
+            invLineItem.quantity = 4;
+            invLineItem.price = 450.00;
+            invLineItem.amount = 1800.00;
             invPage.invoiceLineItems.Add(invLineItem2);
 
 
@@ -61,9 +73,16 @@ namespace InvoiceRecognizer
     {
 
         //TODO: Change these keys based on new invoice
-        public string fromCompanyName { get; set; }
-        public string fromCompanyAddress { get; set; }
-        
+        public DateTime date { get; set; }
+        public int invoiceNumber { get; set; }
+
+        public string terms { get; set; }
+        public DateTime due { get; set; }
+        public double subtotal { get; set; }
+        public double taxPercent { get; set; }
+
+        public double taxAmount { get; set; }
+        public double balanceDue { get; set; }
 
         public IList<InvoiceLineItem> invoiceLineItems = new List<InvoiceLineItem>();
 
