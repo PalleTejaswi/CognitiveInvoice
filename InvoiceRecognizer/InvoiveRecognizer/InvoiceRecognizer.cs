@@ -34,14 +34,14 @@ namespace InvoiceRecognizer
 
             //First line
             InvoiceLineItem invLineItem = new InvoiceLineItem();
-            invLineItem.invoiceNumber = 123456;
-            invLineItem.invoiceDate = new DateTime(2019, 9, 12);
+            invLineItem.serialNumber = 1;
+            invLineItem.itemDescription = "Item 1";
             invPage.invoiceLineItems.Add(invLineItem);
 
             // Second Line
             InvoiceLineItem invLineItem2 = new InvoiceLineItem();
-            invLineItem2.invoiceNumber = 765433;
-            invLineItem2.invoiceDate = new DateTime(2019, 9, 11);
+            invLineItem2.serialNumber = 2;
+            invLineItem2.itemDescription = "Item 2";
             invPage.invoiceLineItems.Add(invLineItem2);
 
 
@@ -73,10 +73,14 @@ namespace InvoiceRecognizer
 
     public class InvoiceLineItem
     {
-        public long invoiceNumber { get; set; }
-        public DateTime invoiceDate { get; set; }
+        public int serialNumber { get; set; }
+        public string itemDescription { get; set; }
 
-        // Add more columns here
+        public int quantity { get; set; }
+        public double price { get; set; }
+
+        public double amount { get; set; }
+        
     }
 
 }
