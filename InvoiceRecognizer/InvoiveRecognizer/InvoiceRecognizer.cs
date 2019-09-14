@@ -20,15 +20,13 @@ namespace InvoiceRecognizer
         protected override void Execute(CodeActivityContext context)
         {
 
-            // Call 
-
-            /* if (kv.Key.Count > 0)
-                 if (kv.Key[0].Text == "Address")
-                     invPage.fromCompanyAddress = kv.Value[0].Text;
-            */
+            
+            //TODO: Test with manual entries initially. Once UiPath is working properly, change this code 
+            // to get the invoice data from Azure Form Recognizer
 
             Invoice inv = new Invoice();
             InvoicePage invPage = new InvoicePage();
+            //TODO: Change the following code to reflect the new properties
             invPage.fromCompanyName = "Apple";
             invPage.fromCompanyAddress = "1 Infinite Loop, Cupertino, CA 95014";
 
@@ -50,8 +48,6 @@ namespace InvoiceRecognizer
             var jsonResult = JsonConvert.SerializeObject(inv);
 
             invoiceJson.Set(context, jsonResult);
-
-            //put a for loop here
         }
     }
 
@@ -63,9 +59,11 @@ namespace InvoiceRecognizer
 
     public class InvoicePage
     {
+
+        //TODO: Change these keys based on new invoice
         public string fromCompanyName { get; set; }
         public string fromCompanyAddress { get; set; }
-        // Add more keys here
+        
 
         public IList<InvoiceLineItem> invoiceLineItems = new List<InvoiceLineItem>();
 
@@ -75,13 +73,9 @@ namespace InvoiceRecognizer
     {
         public int serialNumber { get; set; }
         public string itemDescription { get; set; }
-
         public int quantity { get; set; }
         public double price { get; set; }
-
         public double amount { get; set; }
-        
     }
-
 }
 
