@@ -36,6 +36,7 @@ namespace InvoiceRecognizer
             invPage.taxAmount = 195.00;
             invPage.balanceDue = 3195.00;
 
+            for(int i= 1; i<= 2; i++) { }
             //First line
             InvoiceLineItem invLineItem = new InvoiceLineItem();
             invLineItem.serialNumber = 1;
@@ -49,9 +50,9 @@ namespace InvoiceRecognizer
             InvoiceLineItem invLineItem2 = new InvoiceLineItem();
             invLineItem2.serialNumber = 2;
             invLineItem2.itemDescription = "Item 2";
-            invLineItem.quantity = 4;
-            invLineItem.price = 450.00;
-            invLineItem.amount = 1800.00;
+            invLineItem2.quantity = 4;
+            invLineItem2.price = 450.00;
+            invLineItem2.amount = 1800.00;
             invPage.invoiceLineItems.Add(invLineItem2);
 
 
