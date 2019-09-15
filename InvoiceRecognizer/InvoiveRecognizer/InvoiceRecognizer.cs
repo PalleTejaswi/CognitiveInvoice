@@ -36,7 +36,7 @@ namespace InvoiceRecognizer
             invPage.taxAmount = 195.00;
             invPage.balanceDue = 3195.00;
 
-            for(int i= 1; i<= 2; i++) { }
+            //for(int i= 1; i<= 2; i++) { }
             //First line
             InvoiceLineItem invLineItem = new InvoiceLineItem();
             invLineItem.serialNumber = 1;
