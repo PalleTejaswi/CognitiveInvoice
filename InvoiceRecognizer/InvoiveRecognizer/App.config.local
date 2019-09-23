@@ -1,0 +1,9 @@
+﻿<?xml version="1.0" encoding="utf-8" ?>
+<configuration>
+  <appSettings>
+      <add key="subscriptionKey" value="b9b7bc08d37e4810b22b6974b2e0cde3" />
+      <add key="formRecognizerEndPoint" value="https://formrpa.cognitiveservices.azure.com/" />
+      <add key="formRecognizerModelId" value="38bcec5a-ba29-43ae-984d-989cacd17557" />
+      <add key="filePath" value="C:\Users\tejas\Documents\New Invoices\InvoiceNew6.pdf" />
+   </appSettings>
+</configuration>
