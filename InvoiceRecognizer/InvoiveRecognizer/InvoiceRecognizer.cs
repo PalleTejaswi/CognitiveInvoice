@@ -5,6 +5,7 @@ using System.ComponentModel;
 using System.IO;
 using System.Linq;
 using System.Reflection;
+using System.Configuration;
 using System.Text;
 using System.Threading.Tasks;
 using Microsoft.Azure.CognitiveServices.FormRecognizer;
@@ -30,7 +31,7 @@ namespace InvoiceRecognizer
         [Category("Output")]
         public OutArgument<string> InvoiceJson { get; set; }
 
-        private readonly Dictionary<string, string> FormOutputToInvoice =  new Dictionary<string, string>();
+        private readonly Dictionary<string, string> FormOutputToInvoice = new Dictionary<string, string>();
 
         private void SetupDictionaryMapping()
         {
@@ -64,11 +65,11 @@ namespace InvoiceRecognizer
             string formRecognizerModelId = FormRecognizerModelId.Get(context);
             string filePath = FilePath.Get(context);
 
-            string jsonResult = GetInvoiceDetailsfromAzureFormRecognizer(subscriptionKey, formRecognizerEndPoint, 
+            string jsonResult = GetInvoiceDetailsfromAzureFormRecognizer(subscriptionKey, formRecognizerEndPoint,
                                                                         formRecognizerModelId, filePath);
             // Set the output
             InvoiceJson.Set(context, jsonResult);
-        }       
+        }
 
         private string GetInvoiceDetailsfromAzureFormRecognizer(string subscriptionKey, string formRecognizerEndPoint,
                                                                         string formRecognizerModelId, string filePath)
@@ -81,10 +82,10 @@ namespace InvoiceRecognizer
             };
 
             Console.WriteLine("Analyze PDF form...");
-            string jsonResult =  AnalyzePdfForm(formClient, new Guid(formRecognizerModelId), filePath);
+            string jsonResult = AnalyzePdfForm(formClient, new Guid(formRecognizerModelId), filePath);
 
             return jsonResult;
-           
+
 
         }
 
@@ -99,7 +100,7 @@ namespace InvoiceRecognizer
                 return null;
             }
 
-           string jsonResult = "";
+            string jsonResult = "";
             try
             {
                 using (FileStream stream = new FileStream(filePath, FileMode.Open))
@@ -123,33 +124,33 @@ namespace InvoiceRecognizer
         }
 
         private string TransformAnalyzeResult(AnalyzeResult result)
-    {
-        Invoice inv = new Invoice();
-
-        foreach (var page in result.Pages)
         {
+            Invoice inv = new Invoice();
+
+            foreach (var page in result.Pages)
+            {
                 // Take the page from the FormRecognizer output and convert that into InvoicePage object
                 inv.invoicePages.Add(GetInvoicePage(page));
+            }
+
+            string jsonResult = JsonConvert.SerializeObject(inv);
+            return jsonResult;
         }
 
-        string jsonResult = JsonConvert.SerializeObject(inv);
-        return jsonResult;
-    }
-
         private InvoicePage GetInvoicePage(ExtractedPage page)
-    {
-        InvoicePage invPage = new InvoicePage()
         {
-            PageNumber = page.Number
-        };
-        // Take the KeyValuePairs from page (returned by Form Recognizer) and set the properties of InvoicePage object
-        GetInvoiceKeyValuePairs(page, invPage);
-        // Take the Tables from page (returned by Form Recognizer) and assign each table info to InvoiceLineItem object 
-        // and add that line item object to Invoice Page line item collection
-        GetInvoiceTables(page, invPage);
+            InvoicePage invPage = new InvoicePage()
+            {
+                PageNumber = page.Number
+            };
+            // Take the KeyValuePairs from page (returned by Form Recognizer) and set the properties of InvoicePage object
+            GetInvoiceKeyValuePairs(page, invPage);
+            // Take the Tables from page (returned by Form Recognizer) and assign each table info to InvoiceLineItem object 
+            // and add that line item object to Invoice Page line item collection
+            GetInvoiceTables(page, invPage);
 
-        return invPage;
-    }
+            return invPage;
+        }
 
         private void GetInvoiceKeyValuePairs(ExtractedPage page, InvoicePage invPage)
         {
@@ -164,20 +165,20 @@ namespace InvoiceRecognizer
 
                         // Normally we will have to write a humoungous switch statement to set the value for the correspoding property
                         // Instead, we are takning advantage of reflection to set the value to the property
-                         /*   switch (dictionaryValue)
-                            {
-                                case "InvoiceDate":
-                                    invPage.InvoiceDate = kv.Value[0].Text;
-                                    break;
-                                case "InvoiceNumber":
-                                    invPage.InvoiceNumber = kv.Value[0].Text;
-                                    break;
-                                // and SO ON
-                                default:
-                                    break;
-                            }
+                        /*   switch (dictionaryValue)
+                           {
+                               case "InvoiceDate":
+                                   invPage.InvoiceDate = kv.Value[0].Text;
+                                   break;
+                               case "InvoiceNumber":
+                                   invPage.InvoiceNumber = kv.Value[0].Text;
+                                   break;
+                               // and SO ON
+                               default:
+                                   break;
+                           }
 
-                        */
+                       */
 
                         // Use Reflection to get a reference to the property based on name of the property as a string
                         PropertyInfo piInstance = typeof(InvoicePage).GetProperty(FormOutputToInvoice[kv.Key[0].Text]);
@@ -189,16 +190,16 @@ namespace InvoiceRecognizer
                             // Concatenate the values if more than one value is there for a key, for example FROM and TO
                             // using a linq expression here to concatenate the values instead of a for loop
 
-                           /* StringBuilder sb = new StringBuilder();
-                            foreach (var s in kv.Value )
-                            {
-                                sb.Append(s.Text);
-                            }
-                            piInstance.SetValue(invPage, sb.ToString(), null);
-                            */
+                            /* StringBuilder sb = new StringBuilder();
+                             foreach (var s in kv.Value )
+                             {
+                                 sb.Append(s.Text);
+                             }
+                             piInstance.SetValue(invPage, sb.ToString(), null);
+                             */
 
                             piInstance.SetValue(invPage, string.Join(", ", kv.Value.Select(v => v.Text)), null);
-                            
+
                             // If there is only one value for a given key, the following code would have been sufficient
                             //piInstance.SetValue(invPage, kv.Value[0].Text, null);
                         }
@@ -213,16 +214,16 @@ namespace InvoiceRecognizer
             {
                 // Each column will have the same number of entries. Take the entries in the first column (any column is OK)
                 int numberOfRows = ((t.Columns.Count > 0 && t.Columns[0].Entries.Count > 0) ? t.Columns[0].Entries.Count : 0);
-            
+
                 if (numberOfRows > 0)
                 {
                     //Create number of InvoiceLineItems corresponding to number of rows in the table
-                      /*  List<InvoiceLineItem> invoiceLineItems = new List<InvoiceLineItem>();
-                        for (int i = 0; i < numberOfRows; i++)
-                        {
-                            invoiceLineItems.Add(new InvoiceLineItem());
-                        }
-                        */
+                    /*  List<InvoiceLineItem> invoiceLineItems = new List<InvoiceLineItem>();
+                      for (int i = 0; i < numberOfRows; i++)
+                      {
+                          invoiceLineItems.Add(new InvoiceLineItem());
+                      }
+                      */
 
                     List<InvoiceLineItem> invoiceLineItems = Enumerable.Range(0, numberOfRows)
                                                 .Select(i => new InvoiceLineItem())
@@ -262,9 +263,10 @@ namespace InvoiceRecognizer
                 BalanceDue = "3195.00"
             };
 
-       
+
             //First line
-            InvoiceLineItem invLineItem = new InvoiceLineItem() {
+            InvoiceLineItem invLineItem = new InvoiceLineItem()
+            {
                 SerialNumber = "1",
                 ItemDescription = "Item 1",
                 Quantity = "2",
@@ -282,7 +284,8 @@ namespace InvoiceRecognizer
 
 
             // Second Line
-            InvoiceLineItem invLineItem2 = new InvoiceLineItem() {
+            InvoiceLineItem invLineItem2 = new InvoiceLineItem()
+            {
                 SerialNumber = "2",
                 ItemDescription = "Item 2",
                 Quantity = "4",
@@ -311,6 +314,7 @@ namespace InvoiceRecognizer
     public class Invoice
     {
         public IList<InvoicePage> invoicePages = new List<InvoicePage>();
+
     }
 
     public class InvoicePage
@@ -330,16 +334,16 @@ namespace InvoiceRecognizer
         public string BalanceDue { get; set; }
         public int? PageNumber { get; set; }
 
-       /* public DateTime Invoicedate { get; set; }
-        public int InvoiceNumber { get; set; }
-        public string Terms { get; set; }
-        public DateTime Due { get; set; }
-        public double Subtotal { get; set; }
-        public double TaxPercent { get; set; }
-        public double TaxAmount { get; set; }
-        public double BalanceDue { get; set; }
-        public int? PageNumber { get; set; }
-        */
+        /* public DateTime Invoicedate { get; set; }
+         public int InvoiceNumber { get; set; }
+         public string Terms { get; set; }
+         public DateTime Due { get; set; }
+         public double Subtotal { get; set; }
+         public double TaxPercent { get; set; }
+         public double TaxAmount { get; set; }
+         public double BalanceDue { get; set; }
+         public int? PageNumber { get; set; }
+         */
 
         public IList<InvoiceLineItem> invoiceLineItems = new List<InvoiceLineItem>();
     }
