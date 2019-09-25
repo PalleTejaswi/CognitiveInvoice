@@ -1,5 +1,5 @@
 {
-  "name": "NewFormRPA1",
+  "name": "InvoiceProcessingWithRPA",
   "description": "Blank Process",
   "main": "Main.xaml",
   "dependencies": {
