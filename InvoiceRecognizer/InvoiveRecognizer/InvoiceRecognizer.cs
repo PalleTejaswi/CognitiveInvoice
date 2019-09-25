@@ -5,7 +5,6 @@ using System.ComponentModel;
 using System.IO;
 using System.Linq;
 using System.Reflection;
-using System.Configuration;
 using System.Text;
 using System.Threading.Tasks;
 using Microsoft.Azure.CognitiveServices.FormRecognizer;
