@@ -6,9 +6,12 @@ RPA tool comes with many capabilities that can increase productivity tremendousl
 ![](InvoiceProcessingWithRPA/InvoiceProcessingImage.gif)
 
 **2. Why do I need to use Azure Form Recognizer cognitive service when an RPA tool provides a facility to read PDF files?**
+
 It is true that an RPA tool provides functionality to read and process PDF files, it is cumbersome to process and difficult to maintain the logic as more and more vendors are added to the system and each vendor sends their invoices in their own format.
 
 **3. We have more than 100 vendors and each vendor has their own format to send their invoices. We cannot restrict them to send the invoices in one standardize format. What is an efficient way to solve this problem?**
+
+
 It is a common scenario that exists with any medium to large company. The following can be one of the easiest and working solution.
 
 1. Even though the invoices come from multiple vendors, the information from all these invoices will need to be entered into the same Account Payable system. So, let us start from that end. Identify all the fields that are needed from the Account Payables invoice entry screen.
